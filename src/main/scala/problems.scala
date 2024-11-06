@@ -220,34 +220,37 @@ object problems {
     //7. Finding the average rating given by each user for each genre in a movie rating dataset.
 
 
+    /*
 
-    val sp = SparkSession.builder()
-      .appName("Movie")
-      .master("local[*]")
-      .getOrCreate()
+        val sp = SparkSession.builder()
+          .appName("Movie")
+          .master("local[*]")
+          .getOrCreate()
 
-    import sp.implicits._
+        import sp.implicits._
 
-    val ratingData = List(
-      ("User1", "Movie1", "Action", 4.5),
-      ("User1", "Movie2", "Drama", 3.5),
-      ("User1", "Movie3", "Comedy", 2.5),
-      ("User2", "Movie1", "Action", 3.0),
-      ("User2", "Movie2", "Drama", 4.0),
-      ("User2", "Movie3", "Comedy", 5.0),
-      ("User3", "Movie1", "Action", 5.0),
-      ("User3", "Movie2", "Drama", 4.5),
-      ("User3", "Movie3", "Comedy", 3.0)
-    ).toDF("User", "Movie", "Genre", "Rating")
+        val ratingData = List(
+          ("User1", "Movie1", "Action", 4.5),
+          ("User1", "Movie2", "Drama", 3.5),
+          ("User1", "Movie3", "Comedy", 2.5),
+          ("User2", "Movie1", "Action", 3.0),
+          ("User2", "Movie2", "Drama", 4.0),
+          ("User2", "Movie3", "Comedy", 5.0),
+          ("User3", "Movie1", "Action", 5.0),
+          ("User3", "Movie2", "Drama", 4.5),
+          ("User3", "Movie3", "Comedy", 3.0)
+        ).toDF("User", "Movie", "Genre", "Rating")
 
-    val d1 = ratingData.groupBy("user").agg(avg("rating"))
-    val d2 = ratingData.groupBy("genre").agg(count("rating"))
-    d1.show()
-    d2.show()
+        val d1 = ratingData.groupBy("user").agg(avg("rating"))
+        val d2 = ratingData.groupBy("genre").agg(count("rating"))
+        d1.show()
+        d2.show()
+    */
+
+    //__________________  New Problem  _____________________________
 
 
-
-
+    
 
 
 
