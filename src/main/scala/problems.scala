@@ -220,7 +220,7 @@ object problems {
     //7. Finding the average rating given by each user for each genre in a movie rating dataset.
 
 
-/*
+
     val sp = SparkSession.builder()
       .appName("Movie")
       .master("local[*]")
@@ -244,7 +244,7 @@ object problems {
     val d2 = ratingData.groupBy("genre").agg(count("rating"))
     d1.show()
     d2.show()
-*/
+
 
 
 
