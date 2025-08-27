@@ -1,17 +1,11 @@
-import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
-//      import org.apache.spark.implicits._
-import org.apache.spark.sql.functions._
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.SaveMode
 import org.apache.spark.sql.expressions.Window
-import org.apache.spark.sql.streaming.Trigger
+import org.apache.spark.sql.functions._
+
 
 object problems {
   def main(args: Array[String]): Unit = {
+    //    val logger: Logger = Logger.getLogger(this.getClass)
 
     /*
        val sparkconf = new SparkConf()
@@ -42,7 +36,7 @@ object problems {
 
        orderData.filter(col("amount") > 300 && col("Customer").endsWith("a")).show()
        orderData.groupBy("customer").agg(count(col("OrderID")), sum(col("Amount"))).show()
-   */
+    */
 
     //______________Que Number 2 __ E-Commerce Product Analysis ____________________
 
@@ -191,6 +185,7 @@ object problems {
         weatherData.groupBy("city").agg(min("temperature"),max("temperature"),avg("temperature")).show()
     */
 
+
     //__________________   Problem no.7  (Costomer)  _____________________________
 
     /*
@@ -247,12 +242,228 @@ object problems {
         d2.show()
     */
 
-    //__________________  New Problem  _____________________________
+
+    // -------------------------------------------------------------------------------------------------------------------------------
+    //    If salary is less than previous month we will mark it as DOWN, if salary has increased then UP
 
 
-    
+    //        val spark = SparkSession.builder()
+    //          .appName("SekhoBD")
+    //          .master("local[*]")
+    //          .getOrCreate()
+    //
+    //    import spark.implicits._
+    //    val salaryData = Seq(
+    //      (1, "John", 1000, "01/01/2016"),
+    //      (1, "John", 2000, "02/01/2016"),
+    //      (1, "John", 1000, "03/01/2016"),
+    //      (1, "John", 2000, "04/01/2016"),
+    //      (1, "John", 3000, "05/01/2016"),
+    //      (1, "John", 1000, "06/01/2016")).toDF("ID", "NAME", "SALARY", "DATE")
+    //
+    //    val TO_Date = salaryData.withColumn("DATE", to_date(col("DATE"), "MM/dd/yyyy"))
+    //    val window = Window.orderBy("DATE")
+    //    val df = TO_Date.select(
+    //      col("*"), lag(col("SALARY"), 1).over(window).as("previous_Salary"))
+    //    val df2 = df.withColumn("status", when(col("SALARY") > col("previous_Salary"), lit("UP")).otherwise(lit("Down")))
+    //        df2.show()
+    //    TO_Date.show()
 
+
+    //_____________________________  New Problem  ________________________________________________________
+
+    //    1. we want to find the difference between
+    //    the price on each day with it’s previous day.
+
+    //    import spark.implicits._
+
+    //    val saleData = Seq(
+    //      (1, "KitKat", 1000.0, "2021-01-01"),
+    //      (1, "KitKat", 2000.0, "2021-01-02"),
+    //      (1, "KitKat", 1000.0, "2021-01-03"),
+    //      (1, "KitKat", 2000.0, "2021-01-04"),
+    //      (1, "KitKat", 3000.0, "2021-01-05"),
+    //      (1, "KitKat", 1000.0, "2021-01-06")
+    //    ).toDF("IT_ID", "IT_Name", "Price", "PriceDate")
+    //
+    //    val window = Window.partitionBy("IT_ID").orderBy("PriceDate")
+    //    val previousPrice = saleData.withColumn("previousPrice", lag("Price", 1).over(window))
+    //    previousPrice.show()
+    //
+    //    val priceDifference = previousPrice.withColumn("priceDifference", $"Price" - $"previousPrice")
+    //    priceDifference.show()
+
+    //_______________________________________--------------NEXT PROBLEM -------------_________________________________________
+
+    val spark = SparkSession.builder()
+      .appName("SekhoBD")
+      .master("local[*]")
+      .getOrCreate()
+
+    import spark.implicits._
+    val sampleData = Seq(
+      (1, "karthik", 1000),
+      (2, "mohan", 2000),
+      (3, "vinay", 1500),
+      (4, "deva", 3000)
+    ).toDF("id", "name", "salary")
+
+    //    ___________________________------------Q3------------____________________________
+    //    val windows = Window.orderBy("id")
+    //    val leadLagData = sampleData.withColumn("previous_salary", lag("salary", 1).over(windows))
+    //      .withColumn("next_salary", lead("salary", 1).over(windows))
+    //    leadLagData.show()
+
+    //    _________________________---------------Q4----------_____________________________
+    //    val percentageDifferenceDF = leadLagData.withColumn("percentage_difference",
+    //      ($"salary" - $"previous_salary") / $"previous_salary" * 100)
+    //    percentageDifferenceDF.show()
+
+    //    _________________________---------------Q5----------_____________________________
+    //    calculate the rolling sum of salary
+    //    for current row and the pervious two rows
+    //    , ordered by id
+
+    //    val windowSpec = Window.orderBy("id").rowsBetween(-2, 0)
+    //    val rollingSumData = sampleData.withColumn("rolling_sum", sum("salary").over(windowSpec))
+    //    rollingSumData.show()
+
+    //    _________________________---------------Q6----------_____________________________
+
+    //
+    //    // Define the window specification
+    //     Calculate the minimum salary within the last 3 rows
+    //    val dataWithMinSalary = sampleData.withColumn("min_salary", min("salary").over(windowSpec))
+
+    //    // Calculate the difference between current salary and the minimum salary
+    //    val dataWithSalaryDiff = dataWithMinSalary.withColumn("salary_diff", $"salary" - $"min_salary")
+    //    dataWithSalaryDiff.show()
+
+
+    //--------------------------------OR------------------------
+    //    val minSalary = sampleData.withColumn("minSalary", min("salary").over(windowSpec))
+    //    val salDifference = minSalary.withColumn("salaryDifference", $"salary" - $"minSalary")
+    //        salDifference.show()
+
+    //    _________________________---------------Q7----------_____________________________
+
+
+    //    val windowpart = Window.partitionBy("name").orderBy("id")
+    //    val employeeGroup = sampleData.withColumn("lead_salary", lead("salary", 1).over(windowpart))
+    //      .withColumn("lag_salary", lag("salary", 1).over(windowpart))
+    //        employeeGroup.show()
+
+
+    //    _________________________---------------Q8----------_____________________________
+
+    //    val salaryGreaterThan1500 = leadLagData.withColumn("leadGreaterThen1500", lead("salary", 1).over(windowpart))
+    //      .withColumn("lagGreaterThan1500", lag("salary", 1).over(windowpart))
+    //    val df = salaryGreaterThan1500.filter(col("salary") > 1500)
+    //        df.show()
+
+    //    _________________________---------      NOT SOLVED    ------Q9----------_____________________________
+
+    //    val changeSalary = leadLagData.withColumn("changeInSalaryLead", lead("salary", 1).over(windowpart))
+    //      .withColumn("changeInSalaryLag", lag("salary", 1).over(windowpart))
+    //    val changeInSalary = changeSalary.filter(abs(col("salary") - col("changeInSalaryLag")) > 500)
+    //    changeInSalary.show()
+
+    //    _________________________---------------Q_10----------_____________________________
+
+    //    val cumulativeCount=leadLagData.withColumn("cumulativeCount",count("id").over(windowpart))
+    //    cumulativeCount.show()
+    //
+    //    _________________________---------------Q_11----------_____________________________
+
+    //    val wid = Window.partitionBy("name").orderBy(asc("id")).rowsBetween(-1, 0)
+    //    val runningSalary = leadLagData.withColumn("runningSalary", sum("salary").over(wid))
+    //    runningSalary.show()
+
+    //    _________________________---------------Q_12----------_____________________________
+
+    //    val maxSalary=leadLagData.withColumn("maxSalary",max("salary").over(windowpart))
+    //    maxSalary.show()
+
+    //    _________________________---------------Q_13----------_____________________________
+
+    //    val avgSalary = leadLagData.withColumn("avgSalary", avg("salary").over(windowpart))
+    //    val avgSalaryDifference = avgSalary.withColumn("avgSalaryDifference", col("salary") - col("avgSalary"))
+    //    avgSalaryDifference.show()
+
+    //    _________________________---------------Q_14----------_____________________________
+    //    val windowrank = Window.partitionBy("name").orderBy(desc("salary"))
+    //    val employeeRank = sampleData.withColumn("rank", rank().over(windowrank))
+    //    employeeRank.show()
+
+
+    //    _________________________---------------Q_15----------_____________________________
+
+    //    val windowptor = Window.orderBy("id")
+    //    val leadLagSal = sampleData.withColumn("lag_salary", lag("salary", 1).over(windowptor))
+    //      .withColumn("lead_salary", lead("salary", 1).over(windowptor))
+    //    val increasedSalary = leadLagSal.withColumn("increasedSalary", (col("salary") - col("lag_salary")) > 1).filter(col("increasedSalary") === "true")
+    //    increasedSalary.show()
+
+    //============================Q_15===============================================
+
+    import spark.implicits._
+    val Data = Seq(
+      (1, "karthik", 1000),
+      (4, "deva", 7000),
+      (3, "vinay", 6500),
+      (2, "mohan", 2000),
+      (4, "deva", 3900),
+      (1, "karthik", 6600),
+      (3, "vinay", 1500),
+      (1, "karthik", 2500),
+      (4, "deva", 1300)
+    ).toDF("id", "name", "salary")
+
+    val window = Window.orderBy(asc("id"))
+    //    val df=sampleData.withColumn("prev_Emp_Salary",lag(col("salary"),1).over(window))
+    //    val df2=df.filter(col("salary")>col("prev_Emp_Salary"))
+    //    df2.show()
+
+    //============================Q_16===============================================
+
+    //    val window = Window.partitionBy("name").orderBy("id")
+    //    val df = Data.withColumn(" past_month_salary", lag("salary", 1).over(window))
+    //    df.show()
+
+
+    //============================Q_17===============================================
+
+    val old_sal = Data.withColumn("previous_sal", lag(col("salary"), 1).over(window))
+    val changes = old_sal.withColumn("per_salary", when(col("per_change").isNotNull, ((col("previous_sal") - col("salary")) / col("salary")) * 100))
+    changes.show()
 
 
   }
 }
+
+//    val employees =
+
+
+//    val windowSepc = Window.o
+
+
+//    val spark = SparkSession.builder
+//      .master("local[*]")
+//      .appName("ReadArgsExample").getOrCreate()
+//
+//    // Read arguments from the command line
+//    val inputPath = args(0) // First argument
+//    val outputPath = args(1) // Second argument
+//
+//    // Read data from the input path
+//    val df = spark.read.option("header", "true").csv("C:/Users/anike/Desktop/spark")
+//
+//    // Show the DataFrame
+//    df.show()
+//
+//    // Write the DataFrame to the output path
+//    df.write.mode("overwrite").option("header", "true").csv(outputPath)
+//
+//    spark.stop()
+
+
